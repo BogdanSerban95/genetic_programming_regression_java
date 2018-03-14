@@ -91,7 +91,7 @@ public class ExpressionNode {
             case "pow":
                 return args.get(0) < 0 && args.get(1).intValue() != args.get(1) || args.get(0) == 0 ? 0 : Math.pow(args.get(0), args.get(1));
             case "sqrt":
-                return args.get(0) != 0 ? Math.sqrt(args.get(0)) : 0;
+                return args.get(0) >= 0 ? Math.sqrt(args.get(0)) : 0;
             case "log":
                 return args.get(0) > 0 ? Math.log(args.get(0)) / Math.log(2) : 0;
             case "exp":
@@ -101,14 +101,14 @@ public class ExpressionNode {
             case "ifleq":
                 return args.get(0) <= args.get(1) ? args.get(2) : args.get(3);
             case "data":
-                return x[args.get(0).intValue() % n];
+                return x[Math.floorMod(args.get(0).intValue(), n)];
             case "diff":
-                int i = args.get(0).intValue() % n;
-                int j = args.get(1).intValue() % n;
+                int i = Math.floorMod(args.get(0).intValue(), n);
+                int j = Math.floorMod(args.get(1).intValue(), n);
                 return x[i] - x[j];
             case "avg":
-                int k = args.get(0).intValue() % n;
-                int l = args.get(1).intValue() % n;
+                int k = Math.floorMod(args.get(0).intValue(), n);
+                int l = Math.floorMod(args.get(1).intValue(), n);
                 int size = Math.abs(k - l);
                 size = size != 0 ? size : 1;
                 double sum = 0;
@@ -118,5 +118,13 @@ public class ExpressionNode {
                 return sum / size;
         }
         return 0;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
+    public double getFitness() {
+        return fitness;
     }
 }

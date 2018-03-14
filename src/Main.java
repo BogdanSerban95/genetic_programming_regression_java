@@ -30,6 +30,19 @@ public class Main {
 
                 break;
             case 2:
+                n = Integer.parseInt(parser.getArgument(args, "-n"));
+                int m = Integer.parseInt(parser.getArgument(args, "-m"));
+                String fileName = parser.getArgument(args, "-data");
+                expressionString = parser.getArgument(args, "-expr");
+                try {
+                    parsedExpression = SexpFactory.parse(expressionString);
+                    ExpressionNode node = new ExpressionNode().fromExpression(parsedExpression);
+                    DataHolder holder = new DataHolder(n, m);
+                    holder.loadData(fileName);
+                    System.out.println(holder.evaluateExpression(node));
+                } catch (SexpParserException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 3:
                 break;
