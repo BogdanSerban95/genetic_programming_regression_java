@@ -7,26 +7,61 @@ import java.util.Random;
 public class ExpressionNode implements Cloneable {
     private String root;
     private ArrayList<ExpressionNode> children;
-    private double fitness;
+    private double squareError;
+    private int size;
 
     public ExpressionNode() {
-        this.fitness = Double.MAX_VALUE;
-        children = new ArrayList<>();
+        this.squareError = Double.MAX_VALUE;
+        this.children = new ArrayList<>();
+        this.size = 0;
     }
 
-    public void setFitness(double fitness) {
-        this.fitness = fitness;
+    public void setSquareError(double squareError) {
+        this.squareError = squareError;
+    }
+
+    public double getSquareError() {
+        return squareError;
     }
 
     public double getFitness() {
-        return fitness;
+        return 0.25 * this.size + this.squareError;
+//        Math.sqrt(this.size) +
+    }
+
+    public int getChildrenCount() {
+        return this.children.size();
+    }
+
+    public ExpressionNode getChild(int index) {
+        return this.children.get(index);
+    }
+
+    public void setChildAt(int index, ExpressionNode child) {
+        this.children.set(index, child);
+    }
+
+    public void setSize(int expressionSize) {
+        this.size = expressionSize;
+    }
+
+    public void setRoot(String root) {
+        this.root = root;
+    }
+
+    public void setChildren(ArrayList<ExpressionNode> children) {
+        this.children = children;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public ExpressionNode fromExpression(Sexp expression) {
         if (expression.getClass() == SexpList.class) {
             this.root = expression.get(0).toString();
             for (int i = 1; i < expression.getLength(); i++) {
-                this.children.add(new ExpressionNode().fromExpression(((SexpList) expression).get(i)));
+                this.children.add(new ExpressionNode().fromExpression(expression.get(i)));
             }
         } else {
             this.root = expression.toString();
@@ -49,15 +84,40 @@ public class ExpressionNode implements Cloneable {
         return this;
     }
 
-    public ExpressionNode mutate(double chi) {
+    public ExpressionNode randomGrowthInit(int maxHeight, int currentHeight) {
         Random rnd = RandomWrapper.getRandom();
-        if (rnd.nextDouble() < chi) {
+        ExpressionGenerator generator = ExpressionGenerator.getInstance();
+        if (currentHeight == maxHeight) {
+            this.root = generator.randomOperator();
+            for (int i = 0; i < generator.getOperatorArity(this.root); i++) {
+                this.children.add(new ExpressionNode().randomGrowthInit(maxHeight, currentHeight - 1));
+            }
+        } else if (currentHeight != 0) {
+            if (rnd.nextDouble() < 0.5) {
+                this.root = generator.randomOperator();
+                for (int i = 0; i < generator.getOperatorArity(this.root); i++) {
+                    this.children.add(new ExpressionNode().randomGrowthInit(maxHeight, currentHeight - 1));
+                }
+            } else {
+                this.root = generator.randomTerminal();
+                this.children = null;
+            }
+        } else {
+            this.root = generator.randomTerminal();
+            this.children = null;
+        }
+        return this;
+    }
+
+    public ExpressionNode mutate(double mutationProbability) {
+        Random rnd = RandomWrapper.getRandom();
+        if (rnd.nextDouble() < mutationProbability) {
             return new ExpressionNode().randomInit(3);
         } else if (this.children == null) {
             return this;
         } else {
             int childIdx = rnd.nextInt(this.children.size());
-            this.children.set(childIdx, this.children.get(childIdx).mutate(chi));
+            this.children.set(childIdx, this.children.get(childIdx).mutate(mutationProbability));
         }
         return this;
     }
@@ -83,6 +143,18 @@ public class ExpressionNode implements Cloneable {
                 args.add(ex.evaluateExpression(x));
             }
             return this.evaluateOperator(x, args);
+        }
+    }
+
+    public int getExpressionSize() {
+        if (this.children == null) {
+            return 1;
+        } else {
+            int sum = 1;
+            for (ExpressionNode exp : this.children) {
+                sum += exp.getExpressionSize();
+            }
+            return sum;
         }
     }
 
@@ -131,22 +203,20 @@ public class ExpressionNode implements Cloneable {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        ExpressionNode node = new ExpressionNode();
+        node.setRoot(this.root);
+        ArrayList<ExpressionNode> cloneChildren = null;
+        if (this.children != null) {
+            cloneChildren = new ArrayList<>();
+            for (ExpressionNode child : this.children) {
+                cloneChildren.add((ExpressionNode) child.clone());
+            }
+        }
+        node.setChildren(cloneChildren);
+        return node;
     }
 
     public boolean hasChildren() {
         return this.children != null;
-    }
-
-    public int getChildrenCount() {
-        return this.children.size();
-    }
-
-    public ExpressionNode getChild(int index) {
-        return this.children.get(index);
-    }
-
-    public void setChildAt(int index, ExpressionNode child) {
-        this.children.set(index, child);
     }
 }

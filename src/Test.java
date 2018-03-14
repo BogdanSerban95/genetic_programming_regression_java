@@ -3,23 +3,24 @@ import de.tudresden.inf.lat.jsexp.SexpParserException;
 
 public class Test {
     public static void main(String[] args) throws CloneNotSupportedException {
-        DataHolder holder = new DataHolder(12, 506);
+        DataHolder holder = new DataHolder(11, 506);
         holder.loadData("./data/data.txt");
-        GeneticAlgorithm ga = new GeneticAlgorithm(100, 15, 2, 0.1, 5, holder);
-
+        GeneticAlgorithm ga = new GeneticAlgorithm(1000, 20, 3, 0.5, 5, holder);
 //        ga.generateInitialPopulation();
 //        ExpressionNode node1 = ga.tournamentSelection();
 //        ExpressionNode node2 = ga.tournamentSelection();
 //        ExpressionNode node3 = ga.matchedCrossover(node1, node2);
         ExpressionNode best = ga.run();
         System.out.println(best.toExpressionString());
+
+//        ExpressionNode node = new ExpressionNode().randomGrowthInit(3, 3);
         System.out.println("Done...");
 
 //        for(int i = 0; i< 100; i++) {
 //            ExpressionNode node = new ExpressionNode().randomInit(5);
-//            node.setFitness(holder.evaluateExpression(node));
+//            node.setSquareError(holder.evaluateExpression(node));
 //
-//            System.out.println(node.getFitness());
+//            System.out.println(node.getSquareError());
 //        }
 //        ExpressionNode node = null;
 //        try {

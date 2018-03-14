@@ -1,21 +1,20 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class GeneticAlgorithm {
     private int populationSize;
     private int timeBudget;
     private int tournamentSize;
-    private double mutationRate;
+    private double mutationProbability;
     private int maxHeight;
     private DataHolder dataHolder;
     private ArrayList<ExpressionNode> population;
 
-    public GeneticAlgorithm(int populationSize, int timeBudget, int tournamentSize, double mutationRate, int maxHeight, DataHolder dataHolder) {
+    public GeneticAlgorithm(int populationSize, int timeBudget, int tournamentSize, double mutationProbability, int maxHeight, DataHolder dataHolder) {
         this.populationSize = populationSize;
         this.timeBudget = timeBudget;
         this.tournamentSize = tournamentSize;
-        this.mutationRate = mutationRate;
+        this.mutationProbability = mutationProbability;
         this.maxHeight = maxHeight;
         this.dataHolder = dataHolder;
     }
@@ -24,7 +23,24 @@ public class GeneticAlgorithm {
         this.population = new ArrayList<>();
         for (int i = 0; i < this.populationSize; i++) {
             ExpressionNode individual = new ExpressionNode().randomInit(this.maxHeight);
-            individual.setFitness(this.dataHolder.evaluateExpression(individual));
+            individual.setSquareError(this.dataHolder.evaluateExpression(individual));
+            individual.setSize(individual.getExpressionSize());
+            this.population.add(individual);
+        }
+    }
+
+    public void generateMixedInitialPopulation() {
+        this.population = new ArrayList<>();
+        for (int i = 0; i < this.populationSize; i++) {
+            ExpressionNode individual = new ExpressionNode();
+            if (i < this.populationSize / 2) {
+                individual.randomInit(this.maxHeight);
+            } else {
+                individual.randomGrowthInit(this.maxHeight, this.maxHeight);
+            }
+
+            individual.setSquareError(this.dataHolder.evaluateExpression(individual));
+            individual.setSize(individual.getExpressionSize());
             this.population.add(individual);
         }
     }
@@ -108,24 +124,29 @@ public class GeneticAlgorithm {
     public ExpressionNode run() throws CloneNotSupportedException {
         ExpressionNode bestIndividual = null;
         int generationsCount = 0;
-        this.generateInitialPopulation();
+//        this.generateInitialPopulation();
+        this.generateMixedInitialPopulation();
         long startTime = System.currentTimeMillis();
         while ((System.currentTimeMillis() - startTime) / 1000.0 < this.timeBudget) {
             bestIndividual = this.getBestIndividual();
             generationsCount++;
             ArrayList<ExpressionNode> newPopulation = new ArrayList<>();
-            newPopulation.add(bestIndividual);
-            for (int i = 1; i < this.populationSize; i++) {
+//            newPopulation.add(bestIndividual);
+            for (int i = 0; i < this.populationSize; i++) {
                 ExpressionNode parentX = this.tournamentSelection();
                 ExpressionNode parentY = this.tournamentSelection();
                 ExpressionNode offspring = this.matchedCrossover(parentX, parentY);
-                offspring.mutate(this.mutationRate);
-                offspring.setFitness(this.dataHolder.evaluateExpression(offspring));
+                offspring.mutate(this.mutationProbability);
+                offspring.setSquareError(this.dataHolder.evaluateExpression(offspring));
+                offspring.setSize(offspring.getExpressionSize());
                 newPopulation.add(offspring);
             }
+//            bestIndividual.setSquareError(this.dataHolder.evaluateExpression(bestIndividual));
+//            bestIndividual.setSize(bestIndividual.getExpressionSize());
+
             this.population = newPopulation;
+            System.out.println(String.format("Generation count: %d; Fitness: %.4f; Square Error: %.4f; Size: %d", generationsCount, bestIndividual.getFitness(), bestIndividual.getSquareError(), bestIndividual.getSize()));
         }
-        System.out.println(String.format("Generation count: %d; Best fitness: %.4f", generationsCount, bestIndividual.getFitness()));
         return bestIndividual;
     }
 }
