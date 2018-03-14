@@ -8,14 +8,22 @@ import java.io.StringReader;
 
 public class Main {
     public static void main(String[] args) {
-        String testStr = "(min (max 2 3) (log (max 2 2)))";
-        try {
-            Sexp parsedExpression = SexpFactory.parse(new StringReader(testStr));
-            System.out.println(parsedExpression);
-        } catch (SexpParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        String testStr = "(avg 3 1)";
+//        try {
+//            Sexp parsedExpression = SexpFactory.parse(new StringReader(testStr));
+//            ExpressionNode node = new ExpressionNode().fromStringExpression(parsedExpression);
+//
+//            double[] x = new double[]{1, 2, 3, 4, 5};
+//            System.out.println(node.evaluateExpression(x));
+//
+//
+//        } catch (SexpParserException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        ExpressionNode node = new ExpressionNode().randomInit(3);
+        System.out.println(node.toExpressionString());
     }
 }
