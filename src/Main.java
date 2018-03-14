@@ -45,6 +45,21 @@ public class Main {
                 }
                 break;
             case 3:
+                int popSize = Integer.parseInt(parser.getArgument(args, "-lambda"));
+                n = Integer.parseInt(parser.getArgument(args, "-n"));
+                m = Integer.parseInt(parser.getArgument(args, "-m"));
+                int time_budget = Integer.parseInt(parser.getArgument(args, "-time_budget"));
+                fileName = parser.getArgument(args, "-data");
+                DataHolder dataHolder = new DataHolder(n, m);
+                dataHolder.loadData(fileName);
+                GeneticAlgorithm ga = new GeneticAlgorithm(popSize, time_budget, 2, 0.1, 5, dataHolder);
+                try {
+                    ExpressionNode result = ga.run();
+                    System.out.println(result.toExpressionString());
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                    System.out.println("()");
+                }
                 break;
         }
     }

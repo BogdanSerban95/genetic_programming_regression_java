@@ -4,13 +4,22 @@ import de.tudresden.inf.lat.jsexp.SexpList;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ExpressionNode {
+public class ExpressionNode implements Cloneable {
     private String root;
     private ArrayList<ExpressionNode> children;
     private double fitness;
 
     public ExpressionNode() {
+        this.fitness = Double.MAX_VALUE;
         children = new ArrayList<>();
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
+    public double getFitness() {
+        return fitness;
     }
 
     public ExpressionNode fromExpression(Sexp expression) {
@@ -120,11 +129,24 @@ public class ExpressionNode {
         return 0;
     }
 
-    public void setFitness(double fitness) {
-        this.fitness = fitness;
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
-    public double getFitness() {
-        return fitness;
+    public boolean hasChildren() {
+        return this.children != null;
+    }
+
+    public int getChildrenCount() {
+        return this.children.size();
+    }
+
+    public ExpressionNode getChild(int index) {
+        return this.children.get(index);
+    }
+
+    public void setChildAt(int index, ExpressionNode child) {
+        this.children.set(index, child);
     }
 }
