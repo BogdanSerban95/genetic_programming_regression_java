@@ -13,11 +13,11 @@ public class ExpressionNode {
         children = new ArrayList<>();
     }
 
-    public ExpressionNode fromStringExpression(Sexp expression) {
+    public ExpressionNode fromExpression(Sexp expression) {
         if (expression.getClass() == SexpList.class) {
             this.root = expression.get(0).toString();
             for (int i = 1; i < expression.getLength(); i++) {
-                this.children.add(new ExpressionNode().fromStringExpression(((SexpList) expression).get(i)));
+                this.children.add(new ExpressionNode().fromExpression(((SexpList) expression).get(i)));
             }
         } else {
             this.root = expression.toString();
