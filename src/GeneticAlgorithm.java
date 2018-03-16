@@ -141,11 +141,8 @@ public class GeneticAlgorithm {
                 offspring.setSize(offspring.getExpressionSize());
                 newPopulation.add(offspring);
             }
-//            bestIndividual.setSquareError(this.dataHolder.evaluateExpression(bestIndividual));
-//            bestIndividual.setSize(bestIndividual.getExpressionSize());
-
             this.population = newPopulation;
-            System.out.println(String.format("Generation count: %d; Fitness: %.4f; Square Error: %.4f; Size: %d", generationsCount, bestIndividual.getFitness(), bestIndividual.getSquareError(), bestIndividual.getSize()));
+//            System.out.println(String.format("Generation count: %d; Fitness: %.4f; Square Error: %.4f; Size: %d", generationsCount, bestIndividual.getFitness(), bestIndividual.getSquareError(), bestIndividual.getSize()));
         }
         return bestIndividual;
     }
