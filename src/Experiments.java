@@ -17,7 +17,7 @@ public class Experiments {
         switch (experiment) {
             case 1:
 //                Population size experiment
-                for (int i = 100; i <= 1000; i += 100) {
+                for (int i = 50; i <= 950; i += 100) {
                     System.out.println("Pop size: " + i);
                     ArrayList<String> expResults = new ArrayList<>();
                     GeneticAlgorithm ga = new GeneticAlgorithm(i, 15, 3, 0.2, 5, holder);
@@ -30,14 +30,14 @@ public class Experiments {
                     }
                     results.add(expResults);
                 }
-                writeResultsToCsv("..\\results\\population_size.csv", results, labels);
+                writeResultsToCsv("..\\results\\population_size_50.csv", results, labels);
                 break;
             case 2:
 //                Mutation probability experiment
                 for (double i = 0.05; i <= 0.6; i += 0.05) {
                     System.out.println("Mutation probability: " + i);
                     ArrayList<String> expResults = new ArrayList<>();
-                    GeneticAlgorithm ga = new GeneticAlgorithm(400, 15, 3, i, 5, holder);
+                    GeneticAlgorithm ga = new GeneticAlgorithm(400, 5, 3, i, 5, holder);
                     labels.add(String.valueOf(i));
                     for (int j = 0; j < 100; j++) {
                         if ((j + 1) % 10 == 0) {
@@ -54,7 +54,7 @@ public class Experiments {
                 for (int i = 2; i <= 6; i += 1) {
                     System.out.println("Max height: " + i);
                     ArrayList<String> expResults = new ArrayList<>();
-                    GeneticAlgorithm ga = new GeneticAlgorithm(400, 15, 3, 0.2, i, holder);
+                    GeneticAlgorithm ga = new GeneticAlgorithm(400, 2, 3, 0.2, i, holder);
                     labels.add(String.valueOf(i));
                     for (int j = 0; j < 100; j++) {
                         if ((j + 1) % 10 == 0) {
