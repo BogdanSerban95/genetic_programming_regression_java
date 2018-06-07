@@ -11,4 +11,4 @@ ADD jsexp-0.2.2.jar /bin
 
 RUN javac -cp ./bin/jsexp-0.2.2.jar: -d ./bin/. ./bin/*.java
 
-CMD ["-username", "bas782", "-verbose", "-submission" , "java -cp ./bin:./bin/jsexp-0.2.2.jar: bas782"]
+CMD ["-username", "bas782", "-submission" , "java -cp ./bin:./bin/jsexp-0.2.2.jar: bas782"]

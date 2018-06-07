@@ -1,4 +1,7 @@
 /out
 /.idea
+/results
 
+*.pdf
+*.zip
 *.class
